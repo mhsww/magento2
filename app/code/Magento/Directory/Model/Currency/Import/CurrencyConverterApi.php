@@ -22,7 +22,7 @@ class CurrencyConverterApi extends AbstractImport
     /**
      * @var string
      */
-    public const CURRENCY_CONVERTER_URL = 'https://free.currconv.com/api/v7/convert?apiKey={{ACCESS_KEY}}'
+    public const CURRENCY_CONVERTER_URL = 'https://prepaid.currconv.com/api/v7/convert?apiKey={{ACCESS_KEY}}'
         . '&q={{CURRENCY_RATES}}&compact=ultra';
 
     /**
@@ -117,7 +117,7 @@ class CurrencyConverterApi extends AbstractImport
             } else {
                 if (!isset($response[$currencyFrom . '_' . $to])) {
                     $serviceHost =  $this->getServiceHost($url);
-                    $this->_messages[] = __('We can\'t retrieve a rate from %1 for %2.', $serviceHost, $to);
+                    $this->_messages[] = __('We can\'t retrieve a rate from %1 for %2 to %3.', $serviceHost, $currencyFrom, $to);
                     $data[$currencyFrom][$to] = null;
                 } else {
                     $data[$currencyFrom][$to] = $this->_numberFormat(
@@ -156,7 +156,6 @@ class CurrencyConverterApi extends AbstractImport
      */
     private function getServiceURL(string $currencyFrom, array $currenciesTo): string
     {
-        if (!$this->serviceUrl) {
             // Get access key
             $accessKey = $this->scopeConfig
                 ->getValue('currency/currencyconverterapi/api_key', ScopeInterface::SCOPE_STORE);
@@ -175,7 +174,6 @@ class CurrencyConverterApi extends AbstractImport
                 [$accessKey, $currencyRates],
                 self::CURRENCY_CONVERTER_URL
             );
-        }
         return $this->serviceUrl;
     }
 
